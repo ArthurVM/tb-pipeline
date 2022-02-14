@@ -6,6 +6,7 @@ nextflow.enable.dsl=2
 // import subworkflows
 include {preprocessing} from './workflows/preprocessing.nf'
 include {clockwork} from './workflows/clockwork.nf'
+include {vcf} from './workflows/vcf.nf'
 
 /*
  ANSI escape codes to allow colour-coded output messages
@@ -176,6 +177,10 @@ workflow {
       }
 
       clockwork(clockwork_seqs.join(clockwork_json, by: 0))
+
+      clockwork_vcf = clockwork.out.vcf
+
+      vcf(clockwork_vcf)
 }
 
 workflow.onComplete {
