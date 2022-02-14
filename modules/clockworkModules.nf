@@ -93,20 +93,20 @@ process callVarsMpileup {
     doWeVarCall =~ /NOW\_VARCALL\_${sample_name}/
 
     output:
-    tuple val(sample_name), path("${sample_name}.samtools.vcf"), emit: mpileup_vcf
+    tuple val(sample_name), path("${sample_name}.bcftools.vcf"), emit: mpileup_vcf
 
     script:
-    samtools_vcf = "${sample_name}.samtools.vcf"
+    bcftools_vcf = "${sample_name}.bcftools.vcf"
 
     """
-    samtools mpileup -ugf ${ref} ${bam} | bcftools call --threads ${task.cpus} -vm -O v -o ${samtools_vcf}
+    bcftools mpileup -Ou -a 'INFO/AD' -f ${ref} ${bam} | bcftools call --threads ${task.cpus} -vm -O v -o ${bcftools_vcf}
     """
 
     stub:
-    samtools_vcf = "${sample_name}.samtools.vcf"
+    bcftools_vcf = "${sample_name}.bcftools.vcf"
 
     """
-    touch ${samtools_vcf}
+    touch ${bcftools_vcf}
     """
 }
 
